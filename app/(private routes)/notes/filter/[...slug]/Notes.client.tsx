@@ -7,7 +7,7 @@ import { type FetchTagNote } from '@/types/note';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchFilterNotes } from '@/lib/api';
+import { fetchFilterNotes } from '@/lib/api/api';
 import { useDebouncedCallback } from 'use-debounce';
 
 import NoteList from '@/components/NoteList/NoteList';
