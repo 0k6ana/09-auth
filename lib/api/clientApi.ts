@@ -19,6 +19,11 @@ interface UpdateUserBody {
   avatar?: string;
 }
 
+interface NotesResponse {
+  notes: Note[];
+  totalPages: number;
+}
+
 /* ================= NOTES ================= */
 
 export const fetchNotes = async (params?: {

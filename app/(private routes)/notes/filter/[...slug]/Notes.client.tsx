@@ -3,11 +3,10 @@
 import css from './page.module.css';
 
 import { type FetchTagNote } from '@/types/note';
-
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchFilterNotes } from '@/lib/api/api';
+import { fetchNotes } from '@/lib/api/clientApi';
 import { useDebouncedCallback } from 'use-debounce';
 
 import NoteList from '@/components/NoteList/NoteList';
@@ -15,7 +14,7 @@ import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
 
 interface NotesClientProps {
-  tag: FetchTagNote;
+  tag?: FetchTagNote;
 }
 
 export default function NotesClient({ tag }: NotesClientProps) {
@@ -23,12 +22,15 @@ export default function NotesClient({ tag }: NotesClientProps) {
   const [page, setPage] = useState<number>(1);
   const [word, setWord] = useState<string>('');
 
-  const { data } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['notes', tag, page, word],
-    queryFn: () => fetchFilterNotes(tag, page, word),
+    queryFn: () =>
+      fetchNotes({
+        tag,
+        page,
+        search: word,
+      }),
     placeholderData: keepPreviousData,
-    refetchOnMount: false,
-    throwOnError: true,
   });
 
   const handleCreateNavigation = (): void => {
@@ -39,6 +41,9 @@ export default function NotesClient({ tag }: NotesClientProps) {
     setPage(1);
     setWord(newWord);
   }, 500);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error loading notes</p>;
 
   return (
     <div className={css.notes}>
@@ -64,6 +69,8 @@ export default function NotesClient({ tag }: NotesClientProps) {
       {data && data.notes.length > 0 && (
         <NoteList noteList={data.notes} />
       )}
+
+      {data && data.notes.length === 0 && <p>No notes found</p>}
     </div>
   );
 }
