@@ -25,8 +25,16 @@ export async function proxy(request: NextRequest) {
 
       const res = NextResponse.next();
 
-      res.cookies.set("accessToken", session.accessToken);
-      res.cookies.set("refreshToken", session.refreshToken);
+      const setCookieHeader = response.headers["set-cookie"];
+
+      if (setCookieHeader) {
+        setCookieHeader.forEach((cookie: string) => {
+          const [nameValue] = cookie.split(";");
+          const [name, value] = nameValue.split("=");
+
+          res.cookies.set(name, value);
+        });
+      }
 
       return res;
     } catch {
@@ -39,7 +47,7 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL("/profile", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return NextResponse.next();
