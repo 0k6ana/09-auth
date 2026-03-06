@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api/clientApi"; 
+import { useAuthStore } from "@/lib/store/authStore"; 
 import css from "./SignInPage.module.css"; 
 
 export default function SignInPage() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+
+  const { setIsAuthenticated, setUser } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,7 +23,12 @@ export default function SignInPage() {
     const password = formData.get("password") as string;
 
     try {
-      await login({ email, password }); 
+      
+      const user = await login({ email, password }); 
+
+      setUser(user);
+      setIsAuthenticated(true);
+
       router.push("/profile"); 
     } catch (err: any) {
       setError(err.message || "Failed to login");

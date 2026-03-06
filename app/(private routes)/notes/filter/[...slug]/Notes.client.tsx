@@ -1,11 +1,11 @@
 'use client';
 
 import css from './page.module.css';
+import Link from 'next/link';
 
 import { type FetchTagNote } from '@/types/note';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { fetchNotes } from '@/lib/api/clientApi';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -18,7 +18,6 @@ interface NotesClientProps {
 }
 
 export default function NotesClient({ tag }: NotesClientProps) {
-  const router = useRouter();
   const [page, setPage] = useState<number>(1);
   const [word, setWord] = useState<string>('');
 
@@ -32,10 +31,6 @@ export default function NotesClient({ tag }: NotesClientProps) {
       }),
     placeholderData: keepPreviousData,
   });
-
-  const handleCreateNavigation = (): void => {
-    router.push('/notes/action/create');
-  };
 
   const changeWord = useDebouncedCallback((newWord: string): void => {
     setPage(1);
@@ -58,12 +53,9 @@ export default function NotesClient({ tag }: NotesClientProps) {
           />
         )}
 
-        <button
-          className={css.toolBtn}
-          onClick={handleCreateNavigation}
-        >
+        <Link href="/notes/action/create" className={css.toolBtn}>
           Create note +
-        </button>
+        </Link>
       </div>
 
       {data && data.notes.length > 0 && (

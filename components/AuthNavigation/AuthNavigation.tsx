@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
-import { logout } from "@/lib/api/clientApi"; // твій API для logout
+import { logout } from "@/lib/api/clientApi";
 import css from "./AuthNavigation.module.css";
 
 export default function AuthNavigation() {
@@ -12,9 +12,9 @@ export default function AuthNavigation() {
 
   const handleLogout = async () => {
     try {
-      await logout();               // виклик API для виходу
-      clearIsAuthenticated();       // очищення Zustand-стану
-      router.push("/sign-in");      // редірект на сторінку входу
+      await logout();
+      clearIsAuthenticated();
+      router.push("/sign-in");
     } catch (err) {
       console.error("Logout failed", err);
     }
@@ -29,8 +29,9 @@ export default function AuthNavigation() {
               Login
             </Link>
           </li>
+
           <li className={css.navigationItem}>
-            <Link href="/register" className={css.navigationLink}>
+            <Link href="/sign-up" className={css.navigationLink}>
               Sign up
             </Link>
           </li>
@@ -42,8 +43,12 @@ export default function AuthNavigation() {
               Profile
             </Link>
           </li>
+
           <li className={css.navigationItem}>
-            <p className={css.userEmail}>{user?.email}</p>
+            <p className={css.userEmail}>
+              {user?.email || user?.username}
+            </p>
+
             <button className={css.logoutButton} onClick={handleLogout}>
               Logout
             </button>

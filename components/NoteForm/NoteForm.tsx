@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useNoteStore } from '@/lib/store/noteStore';
 import { type Note } from '@/types/note';
+import {createNote} from '@/lib/api/clientApi'
 
 import css from './NoteForm.module.css';
 
@@ -46,24 +47,6 @@ export default function NoteForm({
   useEffect(() => {
     setForm(draft || initialDraft);
   }, [draft]);
-
-  // ---------------- API ----------------
-
-  const createNote = async (note: CreateNoteDto): Promise<Note> => {
-    const response = await fetch('/api/notes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(note),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create note');
-    }
-
-    return response.json();
-  };
 
   // ---------------- Mutation ----------------
 
