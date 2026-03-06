@@ -28,12 +28,20 @@ export async function proxy(request: NextRequest) {
       const setCookieHeader = response.headers["set-cookie"];
 
       if (setCookieHeader) {
-        setCookieHeader.forEach((cookie: string) => {
+        const cookiesArray = Array.isArray(setCookieHeader)
+          ? setCookieHeader
+          : [setCookieHeader];
+
+        cookiesArray.forEach((cookie: string) => {
           const [nameValue] = cookie.split(";");
           const [name, value] = nameValue.split("=");
 
           res.cookies.set(name, value);
         });
+      }
+
+      if (isAuthRoute) {
+        return NextResponse.redirect(new URL("/", request.url));
       }
 
       return res;
