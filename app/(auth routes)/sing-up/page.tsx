@@ -23,7 +23,6 @@ export default function SignUpPage() {
     try {
       await register({ email, password });
 
-      // ✅ автоматичний редірект
       router.push("/profile");
     } catch (err) {
       setError("Registration failed");

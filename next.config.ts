@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://09-auth-b2ze.vercel.app/api/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
